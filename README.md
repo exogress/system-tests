@@ -1,0 +1,1 @@
+bundle config build.bossan --with-cflags="-Wno-error=implicit-function-declaration"
