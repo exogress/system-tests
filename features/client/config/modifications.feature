@@ -33,7 +33,7 @@ Feature: modifications
             port: 11988
         """
     When I spawn exogress client
-    And upstream servers responds to "/" with status-code "200" and body "root"
+    And upstream server responds to "/" with status-code "200" and body "root"
     And I request GET "/" with headers
       | header              | value |
       | x-sent-from-client  | true  |
@@ -41,7 +41,7 @@ Feature: modifications
       | x-sent-from-client3 | true  |
     Then upstream request header "x-sent-from-client" was not set
     And upstream request header "x-inserted" was "yes"
-    And upstream request header "x-sent-from-client2" was "true,appended"
+    And upstream request header "x-sent-from-client2" was "true|appended"
     And upstream request header "x-sent-from-client3" was "rewrite"
 
   Scenario: Modify response
@@ -75,10 +75,10 @@ Feature: modifications
             port: 11988
         """
     When I spawn exogress client
-    Then upstream servers responds to "/not-match" with status-code "201" and body "root" with headers
+    Then upstream server responds to "/not-match" with status-code "201" and body "root" with headers
       | header | value |
       | x-a    | yes   |
-    And upstream servers responds to "/" with status-code "200" and body "root" with headers
+    And upstream server responds to "/" with status-code "200" and body "root" with headers
       | header | value |
       | x-a    | yes   |
     When I request GET "/not-match"

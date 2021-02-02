@@ -28,7 +28,7 @@ Feature: rescue for exceptions handling
     When I spawn exogress client
     And I request GET "/index.html"
     Then I should receive a response with status-code "404"
-    And upstream servers responds to "/index.html" with status-code "200" and body "index-proxy"
+    And upstream server responds to "/index.html" with status-code "200" and body "index-proxy"
     And I request GET "/index.html"
     Then I should receive a response with status-code "200"
     And content is "index-proxy"

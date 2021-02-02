@@ -25,6 +25,12 @@ class WebServer
     end
   end
 
+  def self.add_file_rule(path, status_code, file_path, headers)
+    @@lock.synchronize do
+      @@rules[path] = { status_code: status_code, body: File.read(file_path), headers: headers }
+    end
+  end
+
   # def self.add_header_to_rule(path, header_name, header_value)
   #   @@lock.synchronize do
   #     @@rules[path][:headers][header_name] = header_value

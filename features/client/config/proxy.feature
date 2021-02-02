@@ -73,11 +73,11 @@ Feature: proxy handler should proxy to upstream
             port: 11988
         """
     When I spawn exogress client
-    And upstream servers responds to "/" with status-code "200" and body "root"
+    And upstream server responds to "/" with status-code "200" and body "root"
     And I request GET "/"
     Then I should receive a response with status-code "200"
     And content is "root"
-    When upstream servers responds to "/headers" with status-code "200" and body "headers" with headers
+    When upstream server responds to "/headers" with status-code "200" and body "headers" with headers
       | header      | value |
       | x-my-header | yes   |
     And I request GET "/headers"
