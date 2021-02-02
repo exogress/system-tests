@@ -5,17 +5,25 @@ class WebServer
   @@lock = Mutex::new
   @@rules = {}
   @@last_request = nil
+  @@last_request_body = nil
 
   def self.reset_rules
     @@lock.synchronize do
       @@rules = {}
       @@last_request = {}
+      @@last_request_body = {}
     end
   end
 
   def self.last_request
     @@lock.synchronize do
       @@last_request
+    end
+  end
+
+  def self.last_request_body
+    @@lock.synchronize do
+      @@last_request_body
     end
   end
 
@@ -42,6 +50,7 @@ class WebServer
       server = WEBrick::HTTPServer.new :Port => 11988
       server.mount_proc '/' do |req, res|
         @@lock.synchronize do
+          @@last_request_body = req.body
           @@last_request = req
           by_path = @@rules[req.path]
           if by_path

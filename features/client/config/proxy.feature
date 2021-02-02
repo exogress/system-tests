@@ -83,3 +83,27 @@ Feature: proxy handler should proxy to upstream
     And I request GET "/headers"
     Then content is "headers"
     Then header "x-my-header" is "yes"
+
+  Scenario: Proxy request body
+    Given Exofile content
+        """
+        ---
+        version: 1.0.0-pre.1
+        revision: 1
+        name: proxy
+        mount-points:
+          default:
+            handlers:
+              proxy:
+                kind: proxy
+                upstream: upstream
+                priority: 10
+        upstreams:
+          upstream:
+            port: 11988
+        """
+    When I spawn exogress client
+    And upstream server responds to "/" with status-code "200" and body "root"
+    And I request POST "/" with body "request body"
+    Then I should receive a response with status-code "200"
+    And upstream request body was "request body"

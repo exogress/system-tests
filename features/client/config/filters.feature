@@ -89,3 +89,121 @@ Feature: filters
       | GET    | /d/index2.html   | <html>Not found 404</html> | 404         |
       | GET    | /index.html      | <html>Forbidden 403</html> | 403         |
       | GET    | /pass-through/a  | <html>Fallback</html>      | 200         |
+
+  Scenario: Trailing slash conditions
+    Given Exofile content
+        """
+        ---
+        version: 1.0.0-pre.1
+        revision: 1
+        name: static-dir
+        mount-points:
+          default:
+            handlers:
+              handle:
+                kind: pass-through
+                priority: 5
+                rules:
+                  - filter:
+                      path: ["trailing-require"]
+                      trailing-slash: require
+                    action:
+                      kind: respond
+                      static-response: ok
+                  - filter:
+                      path: ["trailing-allow"]
+                      trailing-slash: allow
+                    action:
+                      kind: respond
+                      static-response: ok
+                  - filter:
+                      path: ["trailing-deny"]
+                      trailing-slash: deny
+                    action:
+                      kind: respond
+                      static-response: ok
+              last-one:
+                kind: pass-through
+                priority: 1000
+                rules:
+                  - filter:
+                      path: ["*"]
+                    action:
+                      kind: respond
+                      static-response: not-found
+            static-responses:
+              ok:
+                kind: raw
+                status-code: 200
+                body:
+                  - content-type: text/plain
+                    content: "OK"
+              not-found:
+                kind: raw
+                status-code: 404
+                body:
+                  - content-type: text/plain
+                    content: "NOT FOUND"
+        """
+    When I spawn exogress client
+    Then I'll get following responses
+      | method | path               | body      | status-code |
+      | GET    | /trailing-allow    | OK        | 200         |
+      | GET    | /trailing-allow/   | OK        | 200         |
+      | GET    | /trailing-require  | NOT FOUND | 404         |
+      | GET    | /trailing-require/ | OK        | 200         |
+      | GET    | /trailing-deny     | OK        | 200         |
+      | GET    | /trailing-deny/    | NOT FOUND | 404         |
+
+  Scenario: Method matching
+    Given Exofile content
+        """
+        ---
+        version: 1.0.0-pre.1
+        revision: 1
+        name: static-dir
+        mount-points:
+          default:
+            handlers:
+              handle:
+                kind: pass-through
+                priority: 5
+                rules:
+                  - filter:
+                      path: ["post-or-put"]
+                      methods:
+                        - POST
+                        - PUT
+                    action:
+                      kind: respond
+                      static-response: ok
+              last-one:
+                kind: pass-through
+                priority: 1000
+                rules:
+                  - filter:
+                      path: ["*"]
+                    action:
+                      kind: respond
+                      static-response: not-found
+            static-responses:
+              ok:
+                kind: raw
+                status-code: 200
+                body:
+                  - content-type: text/plain
+                    content: "OK"
+              not-found:
+                kind: raw
+                status-code: 404
+                body:
+                  - content-type: text/plain
+                    content: "NOT FOUND"
+        """
+    When I spawn exogress client
+    Then I'll get following responses
+      | method | path         | body      | status-code |
+      | POST   | /post-or-put | OK        | 200         |
+      | PUT    | /post-or-put | OK        | 200         |
+      | GET    | /post-or-put | NOT FOUND | 404         |
+      | DELETE | /post-or-put | NOT FOUND | 404         |

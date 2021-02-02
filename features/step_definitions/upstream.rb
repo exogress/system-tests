@@ -14,6 +14,11 @@ And(/^upstream server responds to "([^"]*)" with status\-code "([^"]*)" and body
   WebServer.add_rule(path, status_code, body, {})
 end
 
+Then(/^upstream request body was "([^"]*)"$/) do |request_body|
+  req_body = WebServer.last_request_body
+  expect(req_body).to eq(request_body)
+end
+
 Then(/^upstream request header "([^"]*)" was not set$/) do |header|
   req = WebServer.last_request
   expect(req.header[header]).to be_empty
