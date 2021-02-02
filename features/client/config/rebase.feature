@@ -16,6 +16,23 @@ Feature: rebasing
                 priority: 10
                 base-path: ["base", "path"]
                 replace-base-path: ["replaced"]
+                rules:
+                  - filter:
+                      path: ["filtered"]
+                    action:
+                      kind: respond
+                      static-response: filtered
+                  - filter:
+                      path: ["*"]
+                    action:
+                      kind: invoke
+            static-responses:
+              filtered:
+                status-code: 200
+                kind: raw
+                body:
+                  - content-type: "text/html"
+                    content: "filtered"
         """
     When I spawn exogress client
     When I create directory "dir/replaced"
@@ -23,3 +40,6 @@ Feature: rebasing
     And I request GET "/base/path/index.html"
     Then I should receive a response with status-code "200"
     And content is "replaced-data"
+    And I request GET "/base/path/filtered"
+    Then I should receive a response with status-code "200"
+    And content is "filtered"
