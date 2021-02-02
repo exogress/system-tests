@@ -25,11 +25,11 @@ class WebServer
     end
   end
 
-  def self.add_header_to_rule(path, header_name, header_value)
-    @@lock.synchronize do
-      @@rules[path][:headers][header_name] = header_value
-    end
-  end
+  # def self.add_header_to_rule(path, header_name, header_value)
+  #   @@lock.synchronize do
+  #     @@rules[path][:headers][header_name] = header_value
+  #   end
+  # end
 
   def self.spawn_bg
     Thread.new {

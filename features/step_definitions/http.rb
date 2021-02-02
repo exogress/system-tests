@@ -17,6 +17,10 @@ Then(/^header "([^"]*)" is "([^"]*)"$/) do |name, value|
   expect($last_http_response.header[name]).to eq(value)
 end
 
+Then(/^header "([^"]*)" is not set$/) do |name|
+  expect($last_http_response.header[name]).to be_nil
+end
+
 Then(/^I'll get following responses$/) do |table|
   table.hashes.each do |item|
     method = item[:method]
@@ -29,6 +33,8 @@ Then(/^I'll get following responses$/) do |table|
 
     expect(resp.code).to eq(status_code)
     expect(resp.body).to eq(body)
+
+    $last_http_response = resp
   end
 end
 
@@ -36,7 +42,7 @@ And(/^I request GET "([^"]*)" with headers$/) do |path, table|
   uri = URI.parse("https://#{ENV["DOMAIN"]}#{path}")
   headers = {}
   table.hashes.each do |item|
-    name = item[:name]
+    name = item[:header]
     value = item[:value]
     headers[name] = value
   end

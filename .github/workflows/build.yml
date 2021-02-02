@@ -3,11 +3,7 @@ name: Build
 on:
   push:
     branches:
-#      - master
-      - develop
-  pull_request:
-    branches:
-#      - master
+      - main
       - develop
 
 jobs:
@@ -18,13 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          submodules: true
 
       - name: Test
-        if: env.BRANCH_NAME == 'develop'
         run: |
-          docker tag ${IMAGE}${IMAGE_POSTFIX}:${TAG} ${IMAGE}${IMAGE_POSTFIX}:latest
-          docker tag ${IMAGE}${IMAGE_POSTFIX}:${TAG} ${IMAGE}${IMAGE_POSTFIX}:${GITHUB_SHA}
-          docker push ${IMAGE}${IMAGE_POSTFIX}:latest
-          docker push ${IMAGE}${IMAGE_POSTFIX}:${GITHUB_SHA}
+          docker build system-tests &&
+          docker run -e -e EXG_ACCOUNT=${secrets.EXG_ACCOUNT} -e EXG_PROJECT=${secrets.EXG_PROJECT} -e EXG_ACCESS_KEY_ID=${secrets.EXG_ACCESS_KEY_ID} -e EXG_SECRET_ACCESS_KEY=${secrets.EXG_SECRET_ACCESS_KEY} system-tests

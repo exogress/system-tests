@@ -77,8 +77,9 @@ Feature: proxy handler should proxy to upstream
     And I request GET "/"
     Then I should receive a response with status-code "200"
     And content is "root"
-    When upstream servers responds to "/headers" with status-code "200" and body "headers"
-    And responds with header "x-my-header" equals to "yes"
+    When upstream servers responds to "/headers" with status-code "200" and body "headers" with headers
+      | header      | value |
+      | x-my-header | yes   |
     And I request GET "/headers"
     Then content is "headers"
     Then header "x-my-header" is "yes"
