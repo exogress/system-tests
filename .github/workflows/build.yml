@@ -17,5 +17,5 @@ jobs:
 
       - name: Test
         run: |
-          docker build system-tests . &&
+          docker build -t system-tests . &&
           docker run -e -e LOG_CLIENT=1 -e EXG_DOMAIN=${secrets.EXG_DOMAIN} -e EXG_ACCOUNT=${secrets.EXG_ACCOUNT} -e EXG_PROJECT=${secrets.EXG_PROJECT} -e EXG_ACCESS_KEY_ID=${secrets.EXG_ACCESS_KEY_ID} -e EXG_SECRET_ACCESS_KEY=${secrets.EXG_SECRET_ACCESS_KEY} system-tests
