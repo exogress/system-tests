@@ -76,3 +76,7 @@ And(/^I request POST "([^"]*)" with body "([^"]*)"$/) do |path, request_body|
   $last_http_response = resp
 
 end
+
+And(/^content is my_domain_name$/) do
+  expect($last_http_response.body).to eq(ENV["DOMAIN"])
+end
