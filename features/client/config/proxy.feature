@@ -107,3 +107,54 @@ Feature: proxy handler should proxy to upstream
     And I request POST "/" with body "request body"
     Then I should receive a response with status-code "200"
     And upstream request body was "request body"
+
+  Scenario: Upstream health
+    Given Exofile content
+        """
+        ---
+        version: 1.0.0-pre.1
+        revision: 1
+        name: proxy
+        mount-points:
+          default:
+            handlers:
+              proxy:
+                kind: proxy
+                upstream: upstream
+                priority: 10
+                rescue:
+                  - catch: "exception:proxy-error:bad-gateway:no-healthy-upstreams"
+                    action: respond
+                    status-code: 502
+                    static-response: bad-gateway
+        upstreams:
+          upstream:
+            port: 11988
+            health-checks:
+              root:
+                kind: liveness
+                path: /health
+                timeout: 1s
+                period: 1s
+                expected-status-code: 200
+        static-responses:
+          bad-gateway:
+            kind: raw
+            status-code: 502
+            body:
+              - content-type: text/html
+                content: Bad gateway
+        """
+    When upstream server responds to "/health" with status-code "500" and body "healthy"
+    And upstream server responds to "/" with status-code "200" and body "root"
+    And I spawn exogress client
+    And I request GET "/"
+    Then I should receive a response with status-code "502"
+    When upstream server responds to "/health" with status-code "200" and body "root"
+    And I wait for 4 seconds
+    And I request GET "/"
+    Then I should receive a response with status-code "200"
+    When upstream server responds to "/health" with status-code "500" and body "root"
+    And I wait for 4 seconds
+    And I request GET "/"
+    Then I should receive a response with status-code "502"
