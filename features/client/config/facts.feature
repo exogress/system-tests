@@ -16,9 +16,8 @@ Feature: facts
                 rules:
                   - filter:
                       path: ["*"]
-                    action:
-                      kind: respond
-                      static-response: show-facts
+                    action: respond
+                    static-response: show-facts
         static-responses:
           show-facts:
             kind: raw

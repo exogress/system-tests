@@ -16,13 +16,11 @@ Feature: filters
                 rules:
                   - filter:
                       path: ["pass-through", "*"]
-                    action:
-                      kind: respond
-                      static-response: fallback
+                    action: respond
+                    static-response: fallback
                   - filter:
                       path: ["*"]
-                    action:
-                      kind: next-handler
+                    action: next-handler
               dir:
                 kind: static-dir
                 dir: "./dir"
@@ -30,17 +28,14 @@ Feature: filters
                 rules:
                   - filter:
                       path: ["*", "index1.html"]
-                    action:
-                      kind: invoke
+                    action: invoke
                   - filter:
                       path: ["?", "index2.html"]
-                    action:
-                      kind: invoke
+                    action: invoke
                   - filter:
                       path: ["*"]
-                    action:
-                      kind: respond
-                      static-response: forbidden
+                    action: respond
+                    static-response: forbidden
                 rescue:
                   - catch: "status-code:404"
                     action: respond
@@ -107,30 +102,26 @@ Feature: filters
                   - filter:
                       path: ["trailing-require"]
                       trailing-slash: require
-                    action:
-                      kind: respond
-                      static-response: ok
+                    action: respond
+                    static-response: ok
                   - filter:
                       path: ["trailing-allow"]
                       trailing-slash: allow
-                    action:
-                      kind: respond
-                      static-response: ok
+                    action: respond
+                    static-response: ok
                   - filter:
                       path: ["trailing-deny"]
                       trailing-slash: deny
-                    action:
-                      kind: respond
-                      static-response: ok
+                    action: respond
+                    static-response: ok
               last-one:
                 kind: pass-through
                 priority: 1000
                 rules:
                   - filter:
                       path: ["*"]
-                    action:
-                      kind: respond
-                      static-response: not-found
+                    action: respond
+                    static-response: not-found
             static-responses:
               ok:
                 kind: raw
@@ -174,18 +165,16 @@ Feature: filters
                       methods:
                         - POST
                         - PUT
-                    action:
-                      kind: respond
-                      static-response: ok
+                    action: respond
+                    static-response: ok
               last-one:
                 kind: pass-through
                 priority: 1000
                 rules:
                   - filter:
                       path: ["*"]
-                    action:
-                      kind: respond
-                      static-response: not-found
+                    action: respond
+                    static-response: not-found
             static-responses:
               ok:
                 kind: raw

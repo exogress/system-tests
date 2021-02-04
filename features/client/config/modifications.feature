@@ -17,17 +17,16 @@ Feature: modifications
                 rules:
                   - filter:
                       path: ["*"]
-                    action:
-                      modify-request:
-                        headers:
-                          insert:
-                            "x-inserted": "yes"
-                            "x-sent-from-client3": "rewrite"
-                          append:
-                            "x-sent-from-client2": "appended"
-                          remove:
-                            - "x-sent-from-client"
-                      kind: invoke
+                    action: invoke
+                    modify-request:
+                      headers:
+                        insert:
+                          "x-inserted": "yes"
+                          "x-sent-from-client3": "rewrite"
+                        append:
+                          "x-sent-from-client2": "appended"
+                        remove:
+                          - "x-sent-from-client"
         upstreams:
           upstream:
             port: 11988
@@ -61,15 +60,14 @@ Feature: modifications
                 rules:
                   - filter:
                       path: ["*"]
-                    action:
-                      kind: invoke
-                      on-response:
-                        - when:
-                            status-code: "200"
-                          modifications:
-                            headers:
-                              remove:
-                                - "x-a"
+                    action: invoke
+                    on-response:
+                      - when:
+                          status-code: "200"
+                        modifications:
+                          headers:
+                            remove:
+                              - "x-a"
         upstreams:
           upstream:
             port: 11988

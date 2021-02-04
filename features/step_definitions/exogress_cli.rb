@@ -20,11 +20,10 @@ class ExogressCli
 
     Thread.new do
       cmd = ENV["COMMAND"] || "exogress"
+
       env = {}
 
-      if ENV["CLOUD_ENDPOINT"]
-        env["CLOUD_ENDPOINT"] = ENV["CLOUD_ENDPOINT"]
-      end
+      env["CLOUD_ENDPOINT"] = "http://localhost:2998"
 
       $exogress_cli_stdin, $exogress_cli_stdout, $exogress_cli_stderr, $exogress_cli_wait_thr =
         Open3.popen3(env, "#{cmd} spawn #{app_args}", :chdir => $scenario_dir)

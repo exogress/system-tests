@@ -17,9 +17,8 @@ Feature: profiles filtering
                 rules:
                   - filter:
                       path: ["only-p1"]
-                    action:
-                      kind: respond
-                      static-response: p1
+                    action: respond
+                    static-response: p1
               handler2:
                 kind: pass-through
                 priority: 20
@@ -27,15 +26,13 @@ Feature: profiles filtering
                   - filter:
                       path: ["only-p2"]
                     profiles: ["p2"]
-                    action:
-                      kind: respond
-                      static-response: p2
+                    action: respond
+                    static-response: p2
                   - filter:
                       path: ["both"]
                     profiles: ["p1", "p2"]
-                    action:
-                      kind: respond
-                      static-response: both
+                    action: respond
+                    static-response: both
         static-responses:
           p1:
             kind: raw

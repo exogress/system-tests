@@ -19,13 +19,11 @@ Feature: rebasing
                 rules:
                   - filter:
                       path: ["filtered"]
-                    action:
-                      kind: respond
-                      static-response: filtered
+                    action: respond
+                    static-response: filtered
                   - filter:
                       path: ["*"]
-                    action:
-                      kind: invoke
+                    action: invoke
             static-responses:
               filtered:
                 status-code: 200

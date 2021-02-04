@@ -19,12 +19,10 @@ Feature: authentication (IAP)
                 rules:
                   - filter:
                       path: ["none"]
-                    action:
-                      kind: next-handler
+                    action: next-handler
                   - filter:
                       path: ["*"]
-                    action:
-                      kind: invoke
+                    action: invoke
                 priority: 10
         """
     When I spawn exogress client
