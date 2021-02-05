@@ -1,5 +1,4 @@
-Feature: post-processing optimizations
-
+Feature: post-processing image optimization
   Scenario: WebP optimization
     Given Exofile content
         """
@@ -35,31 +34,3 @@ Feature: post-processing optimizations
       | accept | image/webp,*/*;q=0.8 |
     Then I should receive a response with status-code "200"
     And header "content-type" is "image/webp"
-
-  Scenario: Compression
-    Given Exofile content
-        """
-        ---
-        version: 1.0.0-pre.1
-        revision: 1
-        name: proxy
-        mount-points:
-          default:
-            handlers:
-              proxy:
-                kind: proxy
-                upstream: upstream
-                priority: 10
-        upstreams:
-          upstream:
-            port: 11988
-        """
-    When I spawn exogress client
-    And upstream server responds to "/index.html" with status-code "200" and body "<html><body></body></html>" with headers
-      | header       | value     |
-      | content-type | text/html |
-    And I request GET "/index.html" with headers
-      | header          | value |
-      | accept-encoding | br    |
-    Then I should receive a response with status-code "200"
-    And header "content-encoding" is "br"
