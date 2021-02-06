@@ -89,7 +89,7 @@ Feature: post-processing encoding compression
     Then I should receive a response with status-code "200"
     And header "content-encoding" is "gzip"
 
-  Scenario: Compression alter min size and mime-types
+  Scenario: Compression alter min-size and mime-types
     Given Exofile content
         """
         ---
@@ -106,7 +106,7 @@ Feature: post-processing encoding compression
                 post-processing:
                   encoding:
                     mime-types: ["text/html"]
-                    min_size: 10
+                    min-size: 10
         upstreams:
           upstream:
             port: 11988
