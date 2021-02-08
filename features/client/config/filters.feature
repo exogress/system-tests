@@ -219,6 +219,7 @@ Feature: filters
                         exact: val
                         maybe: ~
                         empty: ""
+                        oneof: ["1", "2", "3"]
                     action: respond
                     static-response: ok
               last-one:
@@ -245,12 +246,13 @@ Feature: filters
         """
     When I spawn exogress client
     Then I'll get following responses
-      | method | path                                                    | body      | status-code |
-      | GET    | /query?action=do&path=a/b&exact=val&empty=              | OK        | 200         |
-      | GET    | /query?action=do&path=a/b&exact=val&empty=              | OK        | 200         |
-      | GET    | /query?action=do&path=a&exact=val&empty=                | OK        | 200         |
-      | GET    | /query?action=other&path=a/b&exact=val&maybe=123&empty= | OK        | 200         |
-      | GET    | /query?action=do&path=&exact=val&empty=                 | NOT FOUND | 404         |
-      | GET    | /query?action=other&path=a/b&exact=val1&empty=          | NOT FOUND | 404         |
-      | GET    | /query?action=&path=a/b&exact=val1&empty=               | NOT FOUND | 404         |
-      | GET    | /query?action=do&path=a/b&exact=val                     | NOT FOUND | 404         |
+      | method | path                                                            | body      | status-code |
+      | GET    | /query?action=do&path=a/b&exact=val&empty=&oneof=1              | OK        | 200         |
+      | GET    | /query?action=do&path=a/b&exact=val&empty=&oneof=2              | OK        | 200         |
+      | GET    | /query?action=do&path=a&exact=val&empty=&oneof=3                | OK        | 200         |
+      | GET    | /query?action=other&path=a/b&exact=val&maybe=123&empty=&oneof=1 | OK        | 200         |
+      | GET    | /query?action=other&path=a/b&exact=val&maybe=123&empty=&oneof=4 | NOT FOUND | 404         |
+      | GET    | /query?action=do&path=&exact=val&empty=&oneof=2                 | NOT FOUND | 404         |
+      | GET    | /query?action=other&path=a/b&exact=val1&empty=&oneof=3          | NOT FOUND | 404         |
+      | GET    | /query?action=&path=a/b&exact=val1&empty=&oneof=1               | NOT FOUND | 404         |
+      | GET    | /query?action=do&path=a/b&exact=val&oneof=2                     | NOT FOUND | 404         |
