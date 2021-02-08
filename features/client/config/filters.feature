@@ -196,3 +196,61 @@ Feature: filters
       | PUT    | /post-or-put | OK        | 200         |
       | GET    | /post-or-put | NOT FOUND | 404         |
       | DELETE | /post-or-put | NOT FOUND | 404         |
+
+  Scenario: Query matching
+    Given Exofile content
+        """
+        ---
+        version: 1.0.0-pre.1
+        revision: 1
+        name: static-dir
+        mount-points:
+          default:
+            handlers:
+              handle:
+                kind: pass-through
+                priority: 5
+                rules:
+                  - filter:
+                      path: ["query"]
+                      query:
+                        action: "?"
+                        path: "*"
+                        exact: val
+                        maybe: ~
+                        empty: ""
+                    action: respond
+                    static-response: ok
+              last-one:
+                kind: pass-through
+                priority: 1000
+                rules:
+                  - filter:
+                      path: ["*"]
+                    action: respond
+                    static-response: not-found
+            static-responses:
+              ok:
+                kind: raw
+                status-code: 200
+                body:
+                  - content-type: text/plain
+                    content: "OK"
+              not-found:
+                kind: raw
+                status-code: 404
+                body:
+                  - content-type: text/plain
+                    content: "NOT FOUND"
+        """
+    When I spawn exogress client
+    Then I'll get following responses
+      | method | path                                                    | body      | status-code |
+      | GET    | /query?action=do&path=a/b&exact=val&empty=              | OK        | 200         |
+      | GET    | /query?action=do&path=a/b&exact=val&empty=              | OK        | 200         |
+      | GET    | /query?action=do&path=a&exact=val&empty=                | OK        | 200         |
+      | GET    | /query?action=other&path=a/b&exact=val&maybe=123&empty= | OK        | 200         |
+      | GET    | /query?action=do&path=&exact=val&empty=                 | NOT FOUND | 404         |
+      | GET    | /query?action=other&path=a/b&exact=val1&empty=          | NOT FOUND | 404         |
+      | GET    | /query?action=&path=a/b&exact=val1&empty=               | NOT FOUND | 404         |
+      | GET    | /query?action=do&path=a/b&exact=val                     | NOT FOUND | 404         |
