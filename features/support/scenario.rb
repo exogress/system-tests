@@ -52,7 +52,13 @@ class WebServer
         @@lock.synchronize do
           @@last_request_body = req.body
           @@last_request = req
-          by_path = @@rules[req.path]
+
+          path = req.path
+          if req.query_string and !req.query_string.empty?
+            path = path + "?" + req.query_string
+          end
+          by_path = @@rules[path]
+
           if by_path
             res.body = by_path[:body]
             by_path[:headers].each do |name, value|

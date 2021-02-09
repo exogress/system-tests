@@ -19,6 +19,22 @@ Feature: filters
                     action: respond
                     static-response: fallback
                   - filter:
+                      path: ["pref", "?"]
+                    action: respond
+                    static-response: fallback
+                  - filter:
+                      path: ["pref_with_many", "*"]
+                    action: respond
+                    static-response: fallback
+                  - filter:
+                      path: ["pref_with_many_and_post", "*", "end"]
+                    action: respond
+                    static-response: fallback
+                  - filter:
+                      path: ["*", "post"]
+                    action: respond
+                    static-response: fallback
+                  - filter:
                       path: ["*"]
                     action: next-handler
               dir:
@@ -61,7 +77,6 @@ Feature: filters
                     content: "<html>Forbidden 403</html>"
         """
     When I spawn exogress client
-    And I request GET "/not-existing"
     And I create directories
       | dir     |
       | dir/a   |
@@ -75,15 +90,19 @@ Feature: filters
       | dir/d/index1.html   | d1      |
 
     Then I'll get following responses
-      | method | path             | body                       | status-code |
-      | GET    | /a/index1.html   | <html>Not found 404</html> | 404         |
-      | GET    | /a/index2.html   | a2                         | 200         |
-      | GET    | /b/c/index1.html | bc1                        | 200         |
-      | GET    | /b/c/index2.html | <html>Forbidden 403</html> | 403         |
-      | GET    | /d/index1.html   | d1                         | 200         |
-      | GET    | /d/index2.html   | <html>Not found 404</html> | 404         |
-      | GET    | /index.html      | <html>Forbidden 403</html> | 403         |
-      | GET    | /pass-through/a  | <html>Fallback</html>      | 200         |
+      | method | path                                      | body                       | status-code |
+      | GET    | /a/index1.html                            | <html>Not found 404</html> | 404         |
+      | GET    | /a/index2.html                            | a2                         | 200         |
+      | GET    | /b/c/index1.html                          | bc1                        | 200         |
+      | GET    | /b/c/index2.html                          | <html>Forbidden 403</html> | 403         |
+      | GET    | /d/index1.html                            | d1                         | 200         |
+      | GET    | /d/index2.html                            | <html>Not found 404</html> | 404         |
+      | GET    | /index.html                               | <html>Forbidden 403</html> | 403         |
+      | GET    | /pass-through/a                           | <html>Fallback</html>      | 200         |
+      | GET    | /pref/a                                   | <html>Fallback</html>      | 200         |
+      | GET    | /pref_with_many_and_post/a/b/c/sd/123/end | <html>Fallback</html>      | 200         |
+      | GET    | /pref_with_many/a2/b2/c2/sd2/321          | <html>Fallback</html>      | 200         |
+      | GET    | /f/bgf/csdf/daa/12e/post                  | <html>Fallback</html>      | 200         |
 
   Scenario: Trailing slash conditions
     Given Exofile content
