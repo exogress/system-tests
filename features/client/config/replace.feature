@@ -33,6 +33,7 @@ Feature: replaces
                         "q2": "*"
                     modify-request:
                       path: ["c", "{{ 1 }}", "{{ q2 }}"]
+                      trailing-slash: unset
                       query:
                         remove:
                           - q2
@@ -43,6 +44,7 @@ Feature: replaces
                         "q4": "/(a+)/"
                     modify-request:
                       path: ["{{ 1.2 }}-z", "{{ 2 }}-x", "y-{{ q4.0 }}"]
+                      trailing-slash: set
                     action: invoke
               rebased:
                 kind: proxy
@@ -72,17 +74,17 @@ Feature: replaces
     Then I should receive a response with status-code "200"
     And content is "a2"
 
-    And upstream server responds to "/b-c-d?q1=d" with status-code "200" and body "a3"
-    And I request GET "/query/c/query?q1=d"
+    And upstream server responds to "/b-c-d/?q1=d" with status-code "200" and body "a3"
+    And I request GET "/query/c/query/?q1=d"
     Then I should receive a response with status-code "200"
     And content is "a3"
 
     And upstream server responds to "/c/d/p1/p2/p3" with status-code "200" and body "a4"
-    And I request GET "/query/d/with-path?q2=p1/p2/p3"
+    And I request GET "/query/d/with-path/?q2=p1/p2/p3"
     Then I should receive a response with status-code "200"
     And content is "a4"
 
-    And upstream server responds to "/bb-z/34-x/y-aaaaaaaa?q4=aaaaaaaa" with status-code "200" and body "a5"
+    And upstream server responds to "/bb-z/34-x/y-aaaaaaaa/?q4=aaaaaaaa" with status-code "200" and body "a5"
     And I request GET "/re/aa-bb/34?q4=aaaaaaaa"
     Then I should receive a response with status-code "200"
     And content is "a5"
