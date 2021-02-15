@@ -51,3 +51,5 @@ Feature: redirect
     And I request GET "/path"
     Then I should receive a response with status-code "300"
     And header "Location" is "/a/b"
+
+#    TODO: test redirect with matching
