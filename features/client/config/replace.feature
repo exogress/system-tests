@@ -2,71 +2,71 @@ Feature: replaces
 
   Scenario: Method matching
     Given Exofile content
-        """
-        ---
-        version: 1.0.0-pre.1
-        revision: 1
-        name: static-dir
-        mount-points:
-          default:
-            handlers:
-              main:
-                kind: proxy
-                upstream: upstream
-                priority: 10
-                rules:
-                  - filter:
-                      path: ["query", "?", "end"]
-                    modify-request:
-                      path: ["r1", "a-{{ 1 }}"]
-                    action: invoke
-                  - filter:
-                      path: ["query", "?", "query"]
-                      query:
-                        "q1": "?"
-                    modify-request:
-                      path: ["b-{{ 1 }}-{{ q1 }}"]
-                    action: invoke
-                  - filter:
-                      path: ["query", "?", "with-path"]
-                      query:
-                        "q2": "*"
-                    modify-request:
-                      path: ["c", "{{ 1 }}", "{{ q2 }}"]
-                      trailing-slash: unset
-                      query:
-                        remove:
-                          - q2
-                    action: invoke
-                  - filter:
-                      path: ["re", "/(.+)-(.+)/", ["23", "34"]]
-                      query:
-                        "q4": "/(a+)/"
-                    modify-request:
-                      path: ["{{ 1.2 }}-z", "{{ 2 }}-x", "y-{{ q4.0 }}"]
-                      trailing-slash: set
-                    action: invoke
-              rebased:
-                kind: proxy
-                upstream: upstream
-                priority: 20
-                base-path: ["base", "path"]
-                replace-base-path: ["replaced"]
-                rules:
-                  - filter:
-                      path: ["p1", "p2", "?"]
-                      query:
-                        "qr1": "/a-(.+)-b/"
-                    modify-request:
-                      path: ["{{ 2 }}", "{{ qr1.1 }}"]
-                      query:
-                        remove:
-                          - qr1
-                    action: invoke
-        upstreams:
-          upstream:
-            port: 11988
-        """
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: static-dir
+mount-points:
+  default:
+    handlers:
+      main:
+        kind: proxy
+        upstream: upstream
+        priority: 10
+        rules:
+          - filter:
+              path: ["query", "?", "end"]
+            modify-request:
+              path: ["r1", "a-{{ 1 }}"]
+            action: invoke
+          - filter:
+              path: ["query", "?", "query"]
+              query:
+                "q1": "?"
+            modify-request:
+              path: ["b-{{ 1 }}-{{ q1 }}"]
+            action: invoke
+          - filter:
+              path: ["query", "?", "with-path"]
+              query:
+                "q2": "*"
+            modify-request:
+              path: ["c", "{{ 1 }}", "{{ q2 }}"]
+              trailing-slash: unset
+              query:
+                remove:
+                  - q2
+            action: invoke
+          - filter:
+              path: ["re", "/(.+)-(.+)/", ["23", "34"]]
+              query:
+                "q4": "/(a+)/"
+            modify-request:
+              path: ["{{ 1.2 }}-z", "{{ 2 }}-x", "y-{{ q4.0 }}"]
+              trailing-slash: set
+            action: invoke
+      rebased:
+        kind: proxy
+        upstream: upstream
+        priority: 20
+        base-path: ["base", "path"]
+        replace-base-path: ["replaced"]
+        rules:
+          - filter:
+              path: ["p1", "p2", "?"]
+              query:
+                "qr1": "/a-(.+)-b/"
+            modify-request:
+              path: ["{{ 2 }}", "{{ qr1.1 }}"]
+              query:
+                remove:
+                  - qr1
+            action: invoke
+upstreams:
+  upstream:
+    port: 11988
+"""
     When I spawn exogress client
 
     And upstream server responds to "/r1/a-f" with status-code "200" and body "a2"

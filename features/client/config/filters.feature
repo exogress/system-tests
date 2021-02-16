@@ -2,80 +2,80 @@ Feature: filters
 
   Scenario: Support filtering on invocation
     Given Exofile content
-        """
-        ---
-        version: 1.0.0-pre.1
-        revision: 1
-        name: static-dir
-        mount-points:
-          default:
-            handlers:
-              next-handler:
-                kind: pass-through
-                priority: 5
-                rules:
-                  - filter:
-                      path: ["pass-through", "*"]
-                    action: respond
-                    static-response: fallback
-                  - filter:
-                      path: ["pref", "?"]
-                    action: respond
-                    static-response: fallback
-                  - filter:
-                      path: ["pref_with_many", "*"]
-                    action: respond
-                    static-response: fallback
-                  - filter:
-                      path: ["pref_with_many_and_post", "*", "end"]
-                    action: respond
-                    static-response: fallback
-                  - filter:
-                      path: ["*", "post"]
-                    action: respond
-                    static-response: fallback
-                  - filter:
-                      path: ["*"]
-                    action: next-handler
-              dir:
-                kind: static-dir
-                dir: "./dir"
-                priority: 10
-                rules:
-                  - filter:
-                      path: ["*", "index1.html"]
-                    action: invoke
-                  - filter:
-                      path: ["?", "index2.html"]
-                    action: invoke
-                  - filter:
-                      path: ["*"]
-                    action: respond
-                    static-response: forbidden
-                rescue:
-                  - catch: "status-code:404"
-                    action: respond
-                    static-response: not-found
-            static-responses:
-              fallback:
-                kind: raw
-                status-code: 200
-                body:
-                  - content-type: text/html
-                    content: "<html>Fallback</html>"
-              not-found:
-                kind: raw
-                status-code: 404
-                body:
-                  - content-type: text/html
-                    content: "<html>Not found 404</html>"
-              forbidden:
-                kind: raw
-                status-code: 403
-                body:
-                  - content-type: text/html
-                    content: "<html>Forbidden 403</html>"
-        """
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: static-dir
+mount-points:
+  default:
+    handlers:
+      next-handler:
+        kind: pass-through
+        priority: 5
+        rules:
+          - filter:
+              path: ["pass-through", "*"]
+            action: respond
+            static-response: fallback
+          - filter:
+              path: ["pref", "?"]
+            action: respond
+            static-response: fallback
+          - filter:
+              path: ["pref_with_many", "*"]
+            action: respond
+            static-response: fallback
+          - filter:
+              path: ["pref_with_many_and_post", "*", "end"]
+            action: respond
+            static-response: fallback
+          - filter:
+              path: ["*", "post"]
+            action: respond
+            static-response: fallback
+          - filter:
+              path: ["*"]
+            action: next-handler
+      dir:
+        kind: static-dir
+        dir: "./dir"
+        priority: 10
+        rules:
+          - filter:
+              path: ["*", "index1.html"]
+            action: invoke
+          - filter:
+              path: ["?", "index2.html"]
+            action: invoke
+          - filter:
+              path: ["*"]
+            action: respond
+            static-response: forbidden
+        rescue:
+          - catch: "status-code:404"
+            action: respond
+            static-response: not-found
+    static-responses:
+      fallback:
+        kind: raw
+        status-code: 200
+        body:
+          - content-type: text/html
+            content: "<html>Fallback</html>"
+      not-found:
+        kind: raw
+        status-code: 404
+        body:
+          - content-type: text/html
+            content: "<html>Not found 404</html>"
+      forbidden:
+        kind: raw
+        status-code: 403
+        body:
+          - content-type: text/html
+            content: "<html>Forbidden 403</html>"
+"""
     When I spawn exogress client
     And I create directories
       | dir     |
@@ -106,55 +106,55 @@ Feature: filters
 
   Scenario: Trailing slash conditions
     Given Exofile content
-        """
-        ---
-        version: 1.0.0-pre.1
-        revision: 1
-        name: static-dir
-        mount-points:
-          default:
-            handlers:
-              handle:
-                kind: pass-through
-                priority: 5
-                rules:
-                  - filter:
-                      path: ["trailing-require"]
-                      trailing-slash: require
-                    action: respond
-                    static-response: ok
-                  - filter:
-                      path: ["trailing-allow"]
-                      trailing-slash: allow
-                    action: respond
-                    static-response: ok
-                  - filter:
-                      path: ["trailing-deny"]
-                      trailing-slash: deny
-                    action: respond
-                    static-response: ok
-              last-one:
-                kind: pass-through
-                priority: 1000
-                rules:
-                  - filter:
-                      path: ["*"]
-                    action: respond
-                    static-response: not-found
-            static-responses:
-              ok:
-                kind: raw
-                status-code: 200
-                body:
-                  - content-type: text/plain
-                    content: "OK"
-              not-found:
-                kind: raw
-                status-code: 404
-                body:
-                  - content-type: text/plain
-                    content: "NOT FOUND"
-        """
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: static-dir
+mount-points:
+  default:
+    handlers:
+      handle:
+        kind: pass-through
+        priority: 5
+        rules:
+          - filter:
+              path: ["trailing-require"]
+              trailing-slash: require
+            action: respond
+            static-response: ok
+          - filter:
+              path: ["trailing-allow"]
+              trailing-slash: allow
+            action: respond
+            static-response: ok
+          - filter:
+              path: ["trailing-deny"]
+              trailing-slash: deny
+            action: respond
+            static-response: ok
+      last-one:
+        kind: pass-through
+        priority: 1000
+        rules:
+          - filter:
+              path: ["*"]
+            action: respond
+            static-response: not-found
+    static-responses:
+      ok:
+        kind: raw
+        status-code: 200
+        body:
+          - content-type: text/plain
+            content: "OK"
+      not-found:
+        kind: raw
+        status-code: 404
+        body:
+          - content-type: text/plain
+            content: "NOT FOUND"
+"""
     When I spawn exogress client
     Then I'll get following responses
       | method | path               | body      | status-code |
@@ -167,47 +167,47 @@ Feature: filters
 
   Scenario: Method matching
     Given Exofile content
-        """
-        ---
-        version: 1.0.0-pre.1
-        revision: 1
-        name: static-dir
-        mount-points:
-          default:
-            handlers:
-              handle:
-                kind: pass-through
-                priority: 5
-                rules:
-                  - filter:
-                      path: ["post-or-put"]
-                      methods:
-                        - POST
-                        - PUT
-                    action: respond
-                    static-response: ok
-              last-one:
-                kind: pass-through
-                priority: 1000
-                rules:
-                  - filter:
-                      path: ["*"]
-                    action: respond
-                    static-response: not-found
-            static-responses:
-              ok:
-                kind: raw
-                status-code: 200
-                body:
-                  - content-type: text/plain
-                    content: "OK"
-              not-found:
-                kind: raw
-                status-code: 404
-                body:
-                  - content-type: text/plain
-                    content: "NOT FOUND"
-        """
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: static-dir
+mount-points:
+  default:
+    handlers:
+      handle:
+        kind: pass-through
+        priority: 5
+        rules:
+          - filter:
+              path: ["post-or-put"]
+              methods:
+                - POST
+                - PUT
+            action: respond
+            static-response: ok
+      last-one:
+        kind: pass-through
+        priority: 1000
+        rules:
+          - filter:
+              path: ["*"]
+            action: respond
+            static-response: not-found
+    static-responses:
+      ok:
+        kind: raw
+        status-code: 200
+        body:
+          - content-type: text/plain
+            content: "OK"
+      not-found:
+        kind: raw
+        status-code: 404
+        body:
+          - content-type: text/plain
+            content: "NOT FOUND"
+"""
     When I spawn exogress client
     Then I'll get following responses
       | method | path         | body      | status-code |
@@ -218,51 +218,51 @@ Feature: filters
 
   Scenario: Query matching
     Given Exofile content
-        """
-        ---
-        version: 1.0.0-pre.1
-        revision: 1
-        name: static-dir
-        mount-points:
-          default:
-            handlers:
-              handle:
-                kind: pass-through
-                priority: 5
-                rules:
-                  - filter:
-                      path: ["query"]
-                      query:
-                        action: "?"
-                        path: "*"
-                        exact: val
-                        maybe: ~
-                        empty: ""
-                        oneof: ["1", "2", "3"]
-                    action: respond
-                    static-response: ok
-              last-one:
-                kind: pass-through
-                priority: 1000
-                rules:
-                  - filter:
-                      path: ["*"]
-                    action: respond
-                    static-response: not-found
-            static-responses:
-              ok:
-                kind: raw
-                status-code: 200
-                body:
-                  - content-type: text/plain
-                    content: "OK"
-              not-found:
-                kind: raw
-                status-code: 404
-                body:
-                  - content-type: text/plain
-                    content: "NOT FOUND"
-        """
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: static-dir
+mount-points:
+  default:
+    handlers:
+      handle:
+        kind: pass-through
+        priority: 5
+        rules:
+          - filter:
+              path: ["query"]
+              query:
+                action: "?"
+                path: "*"
+                exact: val
+                maybe: ~
+                empty: ""
+                oneof: ["1", "2", "3"]
+            action: respond
+            static-response: ok
+      last-one:
+        kind: pass-through
+        priority: 1000
+        rules:
+          - filter:
+              path: ["*"]
+            action: respond
+            static-response: not-found
+    static-responses:
+      ok:
+        kind: raw
+        status-code: 200
+        body:
+          - content-type: text/plain
+            content: "OK"
+      not-found:
+        kind: raw
+        status-code: 404
+        body:
+          - content-type: text/plain
+            content: "NOT FOUND"
+"""
     When I spawn exogress client
     Then I'll get following responses
       | method | path                                                            | body      | status-code |

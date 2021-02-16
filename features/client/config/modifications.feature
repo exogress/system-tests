@@ -2,35 +2,35 @@ Feature: modifications
 
   Scenario: Modify headers of requests
     Given Exofile content
-        """
-        ---
-        version: 1.0.0-pre.1
-        revision: 1
-        name: modifications
-        mount-points:
-          default:
-            handlers:
-              dir:
-                kind: proxy
-                upstream: upstream
-                priority: 10
-                rules:
-                  - filter:
-                      path: ["*"]
-                    action: invoke
-                    modify-request:
-                      headers:
-                        insert:
-                          "x-inserted": "yes"
-                          "x-sent-from-client3": "rewrite"
-                        append:
-                          "x-sent-from-client2": "appended"
-                        remove:
-                          - "x-sent-from-client"
-        upstreams:
-          upstream:
-            port: 11988
-        """
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: modifications
+mount-points:
+  default:
+    handlers:
+      dir:
+        kind: proxy
+        upstream: upstream
+        priority: 10
+        rules:
+          - filter:
+              path: ["*"]
+            action: invoke
+            modify-request:
+              headers:
+                insert:
+                  "x-inserted": "yes"
+                  "x-sent-from-client3": "rewrite"
+                append:
+                  "x-sent-from-client2": "appended"
+                remove:
+                  - "x-sent-from-client"
+upstreams:
+  upstream:
+    port: 11988
+"""
     When I spawn exogress client
     And upstream server responds to "/" with status-code "200" and body "root"
     And I request GET "/" with headers
@@ -45,33 +45,33 @@ Feature: modifications
 
   Scenario: Modify response
     Given Exofile content
-        """
-        ---
-        version: 1.0.0-pre.1
-        revision: 1
-        name: modifications
-        mount-points:
-          default:
-            handlers:
-              dir:
-                kind: proxy
-                upstream: upstream
-                priority: 10
-                rules:
-                  - filter:
-                      path: ["*"]
-                    action: invoke
-                    on-response:
-                      - when:
-                          status-code: "200"
-                        modifications:
-                          headers:
-                            remove:
-                              - "x-a"
-        upstreams:
-          upstream:
-            port: 11988
-        """
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: modifications
+mount-points:
+  default:
+    handlers:
+      dir:
+        kind: proxy
+        upstream: upstream
+        priority: 10
+        rules:
+          - filter:
+              path: ["*"]
+            action: invoke
+            on-response:
+              - when:
+                  status-code: "200"
+                modifications:
+                  headers:
+                    remove:
+                      - "x-a"
+upstreams:
+  upstream:
+    port: 11988
+"""
     When I spawn exogress client
     Then upstream server responds to "/not-match" with status-code "201" and body "root" with headers
       | header | value |

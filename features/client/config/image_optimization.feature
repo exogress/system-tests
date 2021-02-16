@@ -1,22 +1,22 @@
 Feature: post-processing image optimization
   Scenario: WebP optimization
     Given Exofile content
-        """
-        ---
-        version: 1.0.0-pre.1
-        revision: 1
-        name: proxy
-        mount-points:
-          default:
-            handlers:
-              proxy:
-                kind: proxy
-                upstream: upstream
-                priority: 10
-        upstreams:
-          upstream:
-            port: 11988
-        """
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: proxy
+mount-points:
+  default:
+    handlers:
+      proxy:
+        kind: proxy
+        upstream: upstream
+        priority: 10
+upstreams:
+  upstream:
+    port: 11988
+"""
     When I spawn exogress client
     And upstream server responds to "/file.jpg" with status-code "200" and body from file "assets/file.jpg" with headers
       | header       | value      |
@@ -37,26 +37,26 @@ Feature: post-processing image optimization
 
   Scenario: WebP optimization disable
     Given Exofile content
-        """
-        ---
-        version: 1.0.0-pre.1
-        revision: 1
-        name: proxy
-        mount-points:
-          default:
-            handlers:
-              proxy:
-                kind: proxy
-                upstream: upstream
-                priority: 10
-                post-processing:
-                  image:
-                    webp:
-                      enabled: false
-        upstreams:
-          upstream:
-            port: 11988
-        """
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: proxy
+mount-points:
+  default:
+    handlers:
+      proxy:
+        kind: proxy
+        upstream: upstream
+        priority: 10
+        post-processing:
+          image:
+            webp:
+              enabled: false
+upstreams:
+  upstream:
+    port: 11988
+"""
     When I spawn exogress client
     And upstream server responds to "/file.jpg" with status-code "200" and body from file "assets/file.jpg" with headers
       | header       | value      |
@@ -77,27 +77,27 @@ Feature: post-processing image optimization
 
   Scenario: WebP optimization disable for jpeg
     Given Exofile content
-        """
-        ---
-        version: 1.0.0-pre.1
-        revision: 1
-        name: proxy
-        mount-points:
-          default:
-            handlers:
-              proxy:
-                kind: proxy
-                upstream: upstream
-                priority: 10
-                post-processing:
-                  image:
-                    webp:
-                      enabled: true
-                      jpeg: false
-        upstreams:
-          upstream:
-            port: 11988
-        """
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: proxy
+mount-points:
+  default:
+    handlers:
+      proxy:
+        kind: proxy
+        upstream: upstream
+        priority: 10
+        post-processing:
+          image:
+            webp:
+              enabled: true
+              jpeg: false
+upstreams:
+  upstream:
+    port: 11988
+"""
     When I spawn exogress client
     And upstream server responds to "/file.jpg" with status-code "200" and body from file "assets/file.jpg" with headers
       | header       | value      |
@@ -118,27 +118,27 @@ Feature: post-processing image optimization
 
   Scenario: WebP optimization disable for png
     Given Exofile content
-        """
-        ---
-        version: 1.0.0-pre.1
-        revision: 1
-        name: proxy
-        mount-points:
-          default:
-            handlers:
-              proxy:
-                kind: proxy
-                upstream: upstream
-                priority: 10
-                post-processing:
-                  image:
-                    webp:
-                      enabled: true
-                      png: false
-        upstreams:
-          upstream:
-            port: 11988
-        """
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: proxy
+mount-points:
+  default:
+    handlers:
+      proxy:
+        kind: proxy
+        upstream: upstream
+        priority: 10
+        post-processing:
+          image:
+            webp:
+              enabled: true
+              png: false
+upstreams:
+  upstream:
+    port: 11988
+"""
     When I spawn exogress client
     And upstream server responds to "/file.jpg" with status-code "200" and body from file "assets/file.jpg" with headers
       | header       | value      |
