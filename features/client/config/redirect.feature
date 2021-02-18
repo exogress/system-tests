@@ -52,4 +52,86 @@ static-responses:
     Then I should receive a response with status-code "300"
     And header "Location" is "/a/b"
 
-#    TODO: test redirect with matching
+  Scenario: Redirect with templating
+    Given Exofile content
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: static-dir
+mount-points:
+  default:
+    handlers:
+      main:
+        kind: pass-through
+        priority: 10
+        rules:
+          - filter:
+              path: ["relative", "?"]
+            action: respond
+            static-response:
+              kind: redirect
+              destination: ["p-{{ 1 }}"]
+              redirect-type: moved-permanently
+          - filter:
+              path: ["with-domain", "?"]
+            action: respond
+            static-response:
+              kind: redirect
+              destination: ["https://google.com", "a-{{ 1 }}-b"]
+              redirect-type: moved-permanently
+          - filter:
+              path: ["with-query-single"]
+              query-params:
+                q: "?"
+            action: respond
+            static-response:
+              kind: redirect
+              destination: ["https://google.com", "{{ q }}"]
+              redirect-type: moved-permanently
+          - filter:
+              path: ["with-query-path"]
+              query-params:
+                q: "*"
+            action: respond
+            static-response:
+              kind: redirect
+              destination: ["https://google.com", "{{ q }}"]
+              query-params:
+                strategy: remove
+              redirect-type: moved-permanently
+          - filter:
+              path: ["with-query-to-query"]
+              query-params:
+                q1: "?"
+            action: respond
+            static-response:
+              kind: redirect
+              destination: ["https://google.com"]
+              query-params:
+                strategy: remove
+                set:
+                  q: "{{ q1 }}"
+              redirect-type: moved-permanently
+"""
+    When I spawn exogress client
+
+    And I request GET "/relative/rel"
+    Then I should receive a response with status-code "301"
+    And header "Location" is "/p-rel"
+
+    When I request GET "/with-domain/d"
+    Then I should receive a response with status-code "301"
+    And header "Location" is "https://google.com/a-d-b"
+
+    When I request GET "/with-query-path?q=a/b/c"
+    Then I should receive a response with status-code "301"
+    And header "Location" is "https://google.com/a/b/c"
+
+    When I request GET "/with-query-single?q=query"
+    Then I should receive a response with status-code "301"
+    And header "Location" is "https://google.com/query?q=query"
+
+#    When I request GET "/with-query-to-query?q1=query"
+#    Then I should receive a response with status-code "301"
+#    And header "Location" is "https://google.com?q=q1"

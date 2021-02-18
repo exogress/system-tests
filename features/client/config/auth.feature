@@ -1,4 +1,4 @@
-Feature: authentication (IAP)
+Feature: authentication
 
   Scenario: Access is denied if auth is not provided
     Given Exofile content
@@ -13,7 +13,7 @@ mount-points:
       auth:
         kind: auth
         providers:
-          - name: github
+          github:
             acl:
               - allow: github-user
         rules:

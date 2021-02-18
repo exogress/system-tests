@@ -232,7 +232,7 @@ mount-points:
         rules:
           - filter:
               path: ["query"]
-              query:
+              query-params:
                 action: "?"
                 path: "*"
                 exact: val
