@@ -4,7 +4,7 @@ Feature: redirect
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: static-dir
 mount-points:
@@ -56,7 +56,7 @@ static-responses:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: static-dir
 mount-points:

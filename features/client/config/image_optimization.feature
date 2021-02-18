@@ -3,7 +3,7 @@ Feature: post-processing image optimization
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:
@@ -39,7 +39,7 @@ upstreams:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:
@@ -79,7 +79,7 @@ upstreams:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:
@@ -120,7 +120,7 @@ upstreams:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:

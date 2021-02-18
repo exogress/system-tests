@@ -4,7 +4,7 @@ Feature: static_dir handler should serve file from static directory
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: static-dir
 mount-points:
@@ -28,7 +28,7 @@ mount-points:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: static-dir
 mount-points:

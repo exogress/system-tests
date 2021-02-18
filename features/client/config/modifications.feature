@@ -4,7 +4,7 @@ Feature: modifications
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: modifications
 mount-points:
@@ -44,11 +44,11 @@ upstreams:
     And upstream request header "x-sent-from-client3" was "rewrite"
 
 
-  Scenario: Template symbols in headers are disallowed until implemented
+  Scenario: Template in header values
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: disallowed
 mount-points:
@@ -60,35 +60,27 @@ mount-points:
         priority: 10
         rules:
           - filter:
-              path: ["*"]
+              path: ["?"]
             action: invoke
             modify-request:
               headers:
                 insert:
-                  "x-disallowed": "dynamic-in-the-future {{ 1 }}"
-        rescue:
-          - catch: "exception:modification-error"
-            action: respond
-            static-response:
-              kind: raw
-              status-code: 501
-              body:
-                - content-type: "text/html"
-                  content: "ERR IN HEADERS MODIFICATIONS"
+                  "x-header": "Requested: {{ 0 }}"
 upstreams:
   upstream:
     port: 11988
 """
     When I spawn exogress client
-    And I request GET "/"
-    Then I should receive a response with status-code "501"
-    And content is "ERR IN HEADERS MODIFICATIONS"
+    And upstream server responds to "/req-path" with status-code "200" and body "p"
+    And I request GET "/req-path"
+    Then I should receive a response with status-code "200"
+    And upstream request header "x-header" was "Requested: req-path"
 
   Scenario: Modify response
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: modifications
 mount-points:

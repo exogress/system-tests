@@ -4,7 +4,7 @@ Feature: static response
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:
@@ -78,7 +78,7 @@ static-responses:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:
@@ -110,7 +110,7 @@ mount-points:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:
@@ -219,7 +219,7 @@ upstreams:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:
@@ -263,7 +263,7 @@ mount-points:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:
@@ -314,7 +314,7 @@ mount-points:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:
@@ -344,7 +344,7 @@ mount-points:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:
@@ -377,7 +377,7 @@ mount-points:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:
@@ -417,7 +417,7 @@ rescue:
     Given Exofile content
 """
 ---
-version: 1.0.0-pre.1
+version: 1.0.0
 revision: 1
 name: proxy
 mount-points:
