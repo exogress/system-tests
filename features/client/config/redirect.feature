@@ -29,7 +29,7 @@ mount-points:
 static-responses:
   redirect-to-url-str:
     kind: redirect
-    destination: "https://google.com"
+    destination: "https://google.com/a/b?q=1"
     redirect-type: moved-permanently
   redirect-to-url-arr:
     kind: redirect
@@ -44,7 +44,7 @@ static-responses:
 
     And I request GET "/url-str"
     Then I should receive a response with status-code "301"
-    And header "Location" is "https://google.com/"
+    And header "Location" is "https://google.com/a/b?q=1"
     And I request GET "/url-arr"
     Then I should receive a response with status-code "303"
     And header "Location" is "https://google.com/a"
@@ -107,11 +107,22 @@ mount-points:
             action: respond
             static-response:
               kind: redirect
-              destination: ["https://google.com"]
+              destination: ["https://google.com", "a"]
               query-params:
                 strategy: remove
                 set:
                   q: "{{ q1 }}"
+              redirect-type: moved-permanently
+          - filter:
+              path: ["with-query-to-multiple", "*"]
+            action: respond
+            static-response:
+              kind: redirect
+              destination: ["https://google.com", "a"]
+              query-params:
+                strategy: remove
+                set:
+                  q: "{{ 1 }}"
               redirect-type: moved-permanently
 """
     When I spawn exogress client
@@ -132,6 +143,10 @@ mount-points:
     Then I should receive a response with status-code "301"
     And header "Location" is "https://google.com/query?q=query"
 
-#    When I request GET "/with-query-to-query?q1=query"
-#    Then I should receive a response with status-code "301"
-#    And header "Location" is "https://google.com?q=q1"
+    When I request GET "/with-query-to-query?q1=query"
+    Then I should receive a response with status-code "301"
+    And header "Location" is "https://google.com/a?q=query"
+
+    When I request GET "/with-query-to-multiple/a/b/c"
+    Then I should receive a response with status-code "301"
+    And header "Location" is "https://google.com/a?q=a/b/c"

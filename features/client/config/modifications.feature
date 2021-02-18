@@ -43,6 +43,47 @@ upstreams:
     And upstream request header "x-sent-from-client2" was "true|appended"
     And upstream request header "x-sent-from-client3" was "rewrite"
 
+
+  Scenario: Template symbols in headers are disallowed until implemented
+    Given Exofile content
+"""
+---
+version: 1.0.0-pre.1
+revision: 1
+name: disallowed
+mount-points:
+  default:
+    handlers:
+      proxy:
+        kind: proxy
+        upstream: upstream
+        priority: 10
+        rules:
+          - filter:
+              path: ["*"]
+            action: invoke
+            modify-request:
+              headers:
+                insert:
+                  "x-disallowed": "dynamic-in-the-future {{ 1 }}"
+        rescue:
+          - catch: "exception:modification-error"
+            action: respond
+            static-response:
+              kind: raw
+              status-code: 501
+              body:
+                - content-type: "text/html"
+                  content: "ERR IN HEADERS MODIFICATIONS"
+upstreams:
+  upstream:
+    port: 11988
+"""
+    When I spawn exogress client
+    And I request GET "/"
+    Then I should receive a response with status-code "501"
+    And content is "ERR IN HEADERS MODIFICATIONS"
+
   Scenario: Modify response
     Given Exofile content
 """
