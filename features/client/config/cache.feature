@@ -26,7 +26,7 @@ upstreams:
     Then I should receive a response with status-code "200"
     And header "x-exg-edge-cached" is not set
 
-  Scenario: Caching is is not served after disabling it
+  Scenario: Caching is not served after disabling it
     Given Exofile content
 """
 ---

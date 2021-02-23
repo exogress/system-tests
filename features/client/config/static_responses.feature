@@ -89,7 +89,9 @@ mount-points:
         priority: 10
         rules:
           - filter:
-              path: ["resp"]
+              path: ["resp", "*"]
+              query-params:
+                q1: "?"
             action: respond
             data:
               v1: value1
@@ -98,13 +100,17 @@ mount-points:
               status-code: 201
               body:
                 - content-type: text/plain
-                  content: "domain = {{ this.facts.mount_point_hostname }}; {{ this.data.v1 }}"
+                  content: "domain = {{ this.facts.mount_point_hostname }}; {{ this.data.v1 }}; {{ this.matches.q1 }}; {{ this.matches.1 }}"
                   engine: handlebars
 """
     When I spawn exogress client
-    And I request GET "/resp"
+    And I request GET "/resp?q1=1"
     Then I should receive a response with status-code "201"
-    And content is "domain = system-tests.lexg.link; value1"
+    And content is "domain = system-tests.lexg.link; value1; 1; "
+
+    And I request GET "/resp/a/b/c?q1=asd"
+    Then I should receive a response with status-code "201"
+    And content is "domain = system-tests.lexg.link; value1; asd; [a, b, c, ]"
 
   Scenario: respond with static-response as exception handling
     Given Exofile content
@@ -411,7 +417,6 @@ rescue:
     And I request GET "/a"
     Then I should receive a response with status-code "400"
     And content is "exception"
-
 
   Scenario: data-merge and re-throw
     Given Exofile content

@@ -17,7 +17,10 @@ mount-points:
           - filter:
               path: ["url-str"]
             action: respond
-            static-response: redirect-to-url-str
+            static-response:
+              kind: redirect
+              destination: "https://google.com/a/b?q=1"
+              redirect-type: moved-permanently
           - filter:
               path: ["url-arr"]
             action: respond
@@ -27,10 +30,6 @@ mount-points:
             action: respond
             static-response: redirect-to-same-arr
 static-responses:
-  redirect-to-url-str:
-    kind: redirect
-    destination: "https://google.com/a/b?q=1"
-    redirect-type: moved-permanently
   redirect-to-url-arr:
     kind: redirect
     destination: ["https://google.com", "a"]
