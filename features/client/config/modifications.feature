@@ -43,7 +43,6 @@ upstreams:
     And upstream request header "x-sent-from-client2" was "true|appended"
     And upstream request header "x-sent-from-client3" was "rewrite"
 
-
   Scenario: Template in header values
     Given Exofile content
 """

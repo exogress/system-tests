@@ -12,9 +12,8 @@ mount-points:
     handlers:
       auth:
         kind: auth
-        providers:
-          - name: github
-            acl: "@acl-test"
+        github:
+          acl: "@acl-test"
         priority: 10
 """
     When I spawn exogress client

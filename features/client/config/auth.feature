@@ -2,8 +2,7 @@ Feature: authentication
 
   Scenario: Access is denied if auth is not provided
     Given Exofile content
-"""
----
+"""---
 version: 1.0.0
 revision: 1
 name: proxy
@@ -12,10 +11,9 @@ mount-points:
     handlers:
       auth:
         kind: auth
-        providers:
-          github:
-            acl:
-              - allow: github-user
+        github:
+          acl:
+            - allow: github-user
         rules:
           - filter:
               path: ["none"]
