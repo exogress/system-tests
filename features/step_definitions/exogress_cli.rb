@@ -34,7 +34,7 @@ class ExogressCli
 
       Thread.new do
         while line = $exogress_cli_stdout.gets do
-          if line.include? "to signal server established"
+          if line.include? "client is online"
             mutex.synchronize do
               spawned.signal
             end
