@@ -106,11 +106,11 @@ mount-points:
     When I spawn exogress client
     And I request GET "/resp?q1=1"
     Then I should receive a response with status-code "201"
-    And content is "domain = system-tests.lexg.link; value1; 1; "
+    And content is "domain = system-tests.glebpom.lexg.link; value1; 1; "
 
     And I request GET "/resp/a/b/c?q1=asd"
     Then I should receive a response with status-code "201"
-    And content is "domain = system-tests.lexg.link; value1; asd; [a, b, c, ]"
+    And content is "domain = system-tests.glebpom.lexg.link; value1; asd; [a, b, c, ]"
 
   Scenario: respond with static-response as exception handling
     Given Exofile content
