@@ -149,3 +149,31 @@ mount-points:
     When I request GET "/with-query-to-multiple/a/b/c"
     Then I should receive a response with status-code "301"
     And header "Location" is "https://google.com/a?q=a/b/c"
+
+  Scenario: Redirect to string URL with query parameters
+      Given Exofile content
+"""
+---
+version: 1.0.0
+revision: 1
+name: cfg
+mount-points:
+  default:
+    handlers:
+      demo:
+        kind: pass-through
+        priority: 10
+        rules:
+          - filter:
+              path: []
+            action: respond
+            static-response:
+              kind: redirect
+              destination: "https://www.youtube.com/watch?v=pEfD_XOcHb8"
+              redirect-type: temporary-redirect
+"""
+        When I spawn exogress client
+
+        And I request GET "/"
+        Then I should receive a response with status-code "307"
+        And header "Location" is "https://www.youtube.com/watch?v=pEfD_XOcHb8"

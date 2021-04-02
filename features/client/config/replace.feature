@@ -40,6 +40,26 @@ mount-points:
                   - q2
             action: invoke
           - filter:
+              path: ["query-with-optional-match"]
+              query-params:
+                "opt": ~
+            modify-request:
+              path: ["m"]
+              query-params:
+                strategy: remove
+                set:
+                  p: "{{ opt }}"
+            action: invoke
+          - filter:
+              path: ["query-with-optional-match-path"]
+              query-params:
+                "opt": ~
+            modify-request:
+              path: ["m", "{{ opt }}"]
+              query-params:
+                strategy: remove
+            action: invoke
+          - filter:
               path: ["re", "/(.+)-(.+)/", ["23", "34"]]
               query-params:
                 "q4": "/(a+)/"
@@ -133,3 +153,26 @@ upstreams:
     And I request GET "/remove-query?q1=1&q2=s&q3=3"
     Then I should receive a response with status-code "200"
     And content is "a6"
+
+    And upstream server responds to "/m?p=" with status-code "200" and body "a6"
+    And I request GET "/query-with-optional-match"
+    Then I should receive a response with status-code "200"
+    And content is "a6"
+
+    And upstream server responds to "/m?p=p" with status-code "200" and body "a6"
+    And I request GET "/query-with-optional-match?opt=p"
+    Then I should receive a response with status-code "200"
+    And content is "a6"
+
+    And upstream server responds to "/m/p" with status-code "200" and body "a6"
+    And I request GET "/query-with-optional-match-path?opt=p"
+    Then I should receive a response with status-code "200"
+    And content is "a6"
+
+    And upstream server responds to "/m" with status-code "200" and body "a6"
+    And I request GET "/query-with-optional-match-path"
+    Then I should receive a response with status-code "200"
+    And content is "a6"
+
+# test param not passed
+
